@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import UserController from './app/controllers/User/UserController';
 import SessionController from './app/controllers/Session/SessionController';
+import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
 
@@ -10,13 +11,15 @@ routes.get('/', (req, res) => {
 });
 
 /**
- * User
+ * Store user and login  - No middleware
  */
 routes.post('/users', UserController.store);
+routes.post('/sessions', SessionController.store);
 
 /**
- * Sessions
+ * Authenticate routes with middleware
  */
-routes.post('/sessions', SessionController.store);
+routes.use(authMiddleware);
+routes.put('/users', authMiddleware, UserController.update);
 
 export default routes;
