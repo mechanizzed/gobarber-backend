@@ -10,6 +10,7 @@ import UserController from './app/controllers/User/UserController';
 import SessionController from './app/controllers/Session/SessionController';
 import FileController from './app/controllers/File/FileController';
 import ProviderController from './app/controllers/Provider/ProviderController';
+import AppointmentController from './app/controllers/Appointment/AppointmentController';
 
 /**
  * Middleware
@@ -39,6 +40,11 @@ routes.put('/users', authMiddleware, UserController.update);
  * Providers
  */
 routes.get('/providers', ProviderController.index);
+
+/**
+ * Appointments
+ */
+routes.post('/appointments', AppointmentController.store);
 
 /**
  * Upload files
