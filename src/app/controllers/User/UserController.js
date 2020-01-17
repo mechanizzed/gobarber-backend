@@ -11,8 +11,15 @@ class UserController {
   }
 
   async update(req, res) {
-    console.log(req.userId);
-    return res.json({ ok: true });
+    const user = await User.findByPk(req.userId);
+    const { name, oldPassword } = req.body;
+
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: 'Senha atual inválida' });
+    }
+
+    const { id, email, provider } = await user.update(req.body);
+    return res.json({ id, name, email, provider });
   }
 }
 
