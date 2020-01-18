@@ -44,6 +44,7 @@ routes.get('/providers', ProviderController.index);
 /**
  * Appointments
  */
+routes.get('/appointments', AppointmentController.index);
 routes.post('/appointments', AppointmentController.store);
 
 /**
