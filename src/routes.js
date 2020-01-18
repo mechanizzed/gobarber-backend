@@ -12,6 +12,7 @@ import FileController from './app/controllers/File/FileController';
 import ProviderController from './app/controllers/Provider/ProviderController';
 import AppointmentController from './app/controllers/Appointment/AppointmentController';
 import ScheduleController from './app/controllers/Schedule/ScheduleController';
+import NotificationController from './app/controllers/Notification/NotificationController';
 
 /**
  * Middleware
@@ -52,6 +53,11 @@ routes.post('/appointments', AppointmentController.store);
  * Schedules
  */
 routes.get('/schedules', ScheduleController.index);
+
+/**
+ * Notifications
+ */
+routes.get('/notifications', NotificationController.index);
 
 /**
  * Upload files
