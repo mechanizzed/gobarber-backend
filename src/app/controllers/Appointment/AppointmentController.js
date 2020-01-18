@@ -8,8 +8,9 @@ import Appointment from '../../models/Appointment/Appointment';
 // NotificationSchema Mongo
 import Notification from '../../schemas/Notification';
 
-// Mail Utils
-import Mail from '../../../utils/Mail';
+// Queue Redis Utils and Jobs
+import CanceledMail from '../../jobs/Email/CanceledMail';
+import Queue from '../../../utils/Queue';
 
 class AppointmentController {
   /**
@@ -150,17 +151,9 @@ class AppointmentController {
     appointment.canceled_at = new Date();
     appointment.save();
 
-    await Mail.sendMail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento cancelado!',
-      template: 'canceled',
-      context: {
-        provider: appointment.provider.name,
-        user: appointment.user.name,
-        date: format(appointment.date, "dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt,
-        }),
-      },
+    // send new job for canceled mail
+    await Queue.add(CanceledMail.key, {
+      appointment,
     });
 
     return res.json(appointment);
