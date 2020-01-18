@@ -58,6 +58,7 @@ routes.get('/schedules', ScheduleController.index);
  * Notifications
  */
 routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 /**
  * Upload files
