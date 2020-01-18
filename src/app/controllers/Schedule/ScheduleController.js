@@ -5,7 +5,7 @@ import Appointment from '../../models/Appointment/Appointment';
 
 class ScheduleController {
   /**
-   * List schedules
+   * List schedules fro providers
    */
   async index(req, res) {
     const checkIsProvider = await User.findOne({
@@ -18,8 +18,6 @@ class ScheduleController {
         .json({ error: 'Você não é um prestador de serviço' });
     }
 
-    // 2020-01-18 00:00:00
-    // 2020-01-18 23:59:59
     const { date } = req.query;
     const dateParse = parseISO(date);
 
