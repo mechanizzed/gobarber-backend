@@ -14,7 +14,7 @@ import Queue from '../../../utils/Queue';
 
 class AppointmentController {
   /**
-   * List appointments
+   * List appointments for providers
    */
   async index(req, res) {
     const { page = 1 } = req.query;

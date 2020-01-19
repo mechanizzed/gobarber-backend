@@ -13,6 +13,7 @@ import ProviderController from './app/controllers/Provider/ProviderController';
 import AppointmentController from './app/controllers/Appointment/AppointmentController';
 import ScheduleController from './app/controllers/Schedule/ScheduleController';
 import NotificationController from './app/controllers/Notification/NotificationController';
+import AvailableController from './app/controllers/Available/AvailableController';
 
 /**
  * Middleware
@@ -42,6 +43,7 @@ routes.put('/users', authMiddleware, UserController.update);
  * Providers
  */
 routes.get('/providers', ProviderController.index);
+routes.get('/providers/:providerId/available', AvailableController.index);
 
 /**
  * Appointments
@@ -51,7 +53,7 @@ routes.post('/appointments', AppointmentController.store);
 routes.delete('/appointments/:id', AppointmentController.delete);
 
 /**
- * Schedules
+ * Schedules - List schedules fro providers
  */
 routes.get('/schedules', ScheduleController.index);
 
