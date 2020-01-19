@@ -1,7 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
 
-import urlConfig from '../../../config/url';
-
 class File extends Model {
   static init(sequelize) {
     super.init(
@@ -11,7 +9,7 @@ class File extends Model {
         url: {
           type: Sequelize.VIRTUAL,
           get() {
-            return `${urlConfig.baseUrl}/files/${this.path}`;
+            return `${process.env.APP_URL}/files/${this.path}`;
           },
         },
       },
