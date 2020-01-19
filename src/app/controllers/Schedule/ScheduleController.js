@@ -5,7 +5,7 @@ import Appointment from '../../models/Appointment/Appointment';
 
 class ScheduleController {
   /**
-   * List schedules fro providers
+   * List schedules for providers
    */
   async index(req, res) {
     const checkIsProvider = await User.findOne({
