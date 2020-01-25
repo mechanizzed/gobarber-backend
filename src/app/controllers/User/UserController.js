@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import User from '../../models/User/User';
+import File from '../../models/File/File';
 
 class UserController {
   /**
@@ -56,9 +57,19 @@ class UserController {
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Senha atual inválida' });
     }
+    await user.update(req.body);
 
-    const { id, email, provider } = await user.update(req.body);
-    return res.json({ id, name, email, provider });
+    const { id, email, avatar } = await User.findByPk(req.userId, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json({ id, name, email, avatar });
   }
 }
 
