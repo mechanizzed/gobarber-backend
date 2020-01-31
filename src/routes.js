@@ -16,6 +16,14 @@ import NotificationController from './app/controllers/Notification/NotificationC
 import AvailableController from './app/controllers/Available/AvailableController';
 
 /**
+ * Validators
+ */
+import ValidateSessionStore from './app/validators/session/SessionStore';
+import ValidateUserStore from './app/validators/user/UserStore';
+import ValidateUserUpdate from './app/validators/user/UserUpdate';
+import ValidateAppointmentStore from './app/validators/appointment/AppointmentStore';
+
+/**
  * Middleware
  */
 import authMiddleware from './app/middlewares/auth';
@@ -30,14 +38,14 @@ routes.get('/', (req, res) => {
 /**
  * Store user and login  - No middleware
  */
-routes.post('/users', UserController.store);
-routes.post('/sessions', SessionController.store);
+routes.post('/users', ValidateUserStore, UserController.store);
+routes.post('/sessions', ValidateSessionStore, SessionController.store);
 
 /**
  * Authenticate routes with middleware
  */
 routes.use(authMiddleware);
-routes.put('/users', authMiddleware, UserController.update);
+routes.put('/users', ValidateUserUpdate, UserController.update);
 
 /**
  * Providers
@@ -49,7 +57,11 @@ routes.get('/providers/:providerId/available', AvailableController.index);
  * Appointments
  */
 routes.get('/appointments', AppointmentController.index);
-routes.post('/appointments', AppointmentController.store);
+routes.post(
+  '/appointments',
+  ValidateAppointmentStore,
+  AppointmentController.store
+);
 routes.delete('/appointments/:id', AppointmentController.delete);
 
 /**
