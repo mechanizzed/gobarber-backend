@@ -1,15 +1,15 @@
-import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { isBefore, subHours } from 'date-fns';
 import User from '../../models/User/User';
 import File from '../../models/File/File';
 import Appointment from '../../models/Appointment/Appointment';
 
-// NotificationSchema Mongo
-import Notification from '../../schemas/Notification';
-
 // Queue Redis Utils and Jobs
 import CanceledMail from '../../jobs/Email/CanceledMail';
 import Queue from '../../../utils/Queue';
+
+// Services
+
+import CreateAppointmentService from '../../services/appointment/CreateAppointmentService';
 
 class AppointmentController {
   /**
@@ -49,56 +49,10 @@ class AppointmentController {
   async store(req, res) {
     const { provider_id, date } = req.body;
 
-    // check if provider_id is a provider
-    const idProvider = await User.findOne({
-      where: { id: provider_id, provider: true },
-    });
-    if (!idProvider) {
-      return res.status(401).json({
-        error: 'Você só pode criar agendamentos com um provedor de serviços',
-      });
-    }
-
-    /**
-     * Check past date
-     */
-    const hourStart = startOfHour(parseISO(date));
-    if (isBefore(hourStart, new Date())) {
-      return res.status(400).json({ error: 'Data inválida' });
-    }
-
-    /**
-     * Check if date is available
-     */
-    const available = await Appointment.findOne({
-      where: {
-        provider_id,
-        canceled_at: null,
-        date: hourStart,
-      },
-    });
-
-    if (available) {
-      return res.status(400).json({ error: 'Data não disponível' });
-    }
-
-    const appointment = await Appointment.create({
-      user_id: req.userId,
+    const appointment = await CreateAppointmentService.run({
       provider_id,
-      date: hourStart,
-    });
-
-    /**
-     * Send appointment notification for provider with mongodb
-     */
-    const user = await User.findByPk(req.userId);
-    const dateFormated = format(hourStart, "dd 'de' MMMM', às' H:mm'h'", {
-      locale: pt,
-    });
-
-    await Notification.create({
-      content: `Novo agendamento de ${user.name} para o dia ${dateFormated}`,
-      user: provider_id,
+      user_id: req.userId,
+      date,
     });
 
     return res.json(appointment);
